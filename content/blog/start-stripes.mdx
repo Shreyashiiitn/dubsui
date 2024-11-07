@@ -1,0 +1,102 @@
+---
+title: "Stars, Stripes, and Code"
+description: "3DUBS' Odyssey at the ISRO SIF Hackathon!"
+image: /images/blog/sif.png
+date: "2024-02-10"
+authors:
+  - Shreyashiiitn
+---
+
+
+Participating in ISRO’s SIF Hackathon was a spur of the moment decision. I asked my teammates from The Three Dubs (WebDev wing of DevsTomorrow) if they were interested and upon their consent, we registered for the hackathon on 10th December with barely 10 days left till submission deadline. After browsing through the problem statements, we found one that really caught our interest.
+
+<Callout>
+The problem revolved around leveraging User Behavior Data collected from Bhuvan website.
+</Callout>
+
+## We came up with a two-pronged solution:
+1. Using AI to analyze the data and uncover user interaction patterns.
+2. Developing a Recommender System to suggest articles and boost user engagement.
+
+
+However, the challenge was choosing the right Recommender System amidst the myriad options available, ranging from Matrix Factorization and Boltzmann Machine to Autoencoders – and we needed to choose one that was complex enough to give accurate results without being excessively difficult to implement. Or speaking plainly, we wanted the best results with least effort (yes, we are lazy 😜)
+
+So began our frantic search through research papers and blog posts to find our ideal Recommender system!
+
+After a whirlwind research session, we found Google’s Wide and Deep Recommender System, based on a paper they published in 2016. It was love at first sight😍. Jokes aside, do check it out, it is an hour’s read and well worth it - [Paper Link](https://arxiv.org/abs/1606.07792)
+
+<br/>
+<Image
+  src="/images/blog/wadm.png"
+  width="718"
+  height="404"
+  alt="Image"
+/>
+<center className=" text-sm opacity-50 mt-2">Wide and Deep Learning Recommender System</center>
+
+Our proposal was submitted on December 20th (just in time before deadline😮💨, better late than never😓). You can check out the detailed implementation and math behind it on our GitHub page - Proposal Link
+
+Results were initially expected on December 26th but got extended to the first week of January due to the overwhelming number of submissions. I vividly remember the midnight call on December 31st from my teammate, delivering the news of our selection. __It was indeed a fantastic start to the new year!__ 🎉✨
+
+The hackathon took place in Faridabad from January 17th to 19th, running for 30 hours straight. To our surprise (not the good kind🥲, mind you) our problem statement expanded to include three more sub-problems:
+- Generating heatmaps from user data. 📈
+- Creating Session Replays of user interactions. ⏪
+- Monitoring the Server utilization. 🖥️
+---
+__After brainstorming and significant amount of head scratching, nose picking and cursing our fate, we decided on the following solutions:__
+1. User Data Generator for collecting user data. 🛢️
+2. AI Model for recommendations. 🤖
+3. Server for handling incoming and outgoing data and serving AI model. 📶
+4. Monitoring system to analyze server resource utilization. 👁️⃤🔍
+5. Docker Images for easy deployment. 🐳📦
+
+Our tech stack was diverse and included various technologies for different components:
+<Image
+  src="/images/blog/techstack.png"
+  width="718"
+  height="404"
+  alt="Image"
+/>
+<center className=" text-sm opacity-50 mt-2">Tech Stack of our implementation</center>
+
+
+The architecture of our system was quite elaborate (of which I was very proud😤 😎), involving client-side scripts, server-side handling, AI model training, user analytics, server monitoring, and deployment using Docker and NGINX:
+
+<Image
+  src="/images/blog/arch.png"
+  width="718"
+  height="404"
+  alt="Image"/>
+<center className=" text-sm opacity-50 mt-2">Architecture of our system</center>
+
+## In-depth explanation of our implementation (Its not boring and tedious read, I promise🤞🏻🤝🏻):
+1. __User Data Generation Script [Client Side] (JavaScript🟨):__ It is client-side script which is embedded in each web page and collects user interaction data for every session (like a grubby little spy🕵🏻, or icky-sticky spider🕷️, or creepy old uncle🥸…. ok I’ll stop) . At end of each session, this data is packaged and send to our servers.
+2. __User Data Handling [Server] (Python, Flask🐍):__ The collected data is the cleaned and properly organized before being stored in our databases – where it’ll live rest of its life in peace … or it won’t since we CHOP 🔪🥩 it into 3 parts to store in three separate databases since we are collecting three different categories of data. Each database has multiple columns.
+3. __AI Model (PyTorch🔥):__
+    - __Data Generation:__ We tap into our Data Lake (or should I say fish 🎣 from our Data Lake) to get the user interaction data as well as user related data, concatenate these two tables and generate vocabulary📖 of words that user showed interest in (more of this is in Google’s paper, check it out, its great!). This is then feed forward to our forever hungry monster - Model Training Phase.
+    - __Model Training:__ We load our previously trained model and train them on new dataset we have generated. These newly “fattened🫃🏻” models are ready to be butchered 🔪🐖– I mean - are then validated✅ to check if there has been any improvement over previous generation model and the best model is set as production model.
+    - __Model Server:__ The production model – the chosen one🗲, the model who lived ⚯ ͛⚡️- is used to generate recommendation based on user data and these recommendations are forwarded to our Server through API which it turns sends it to our users.
+4. __User Analytics for Developers ( Nextjs, Plotly, rrweb ):__
+    - Our Developer’s dashboard gets data from our server through API which is then used to generate plots using Plotly. (With so much plotting🔪💀, we might as well overthrow our secret overlords!🐍⃝⃒⃤🐍⃝⃒⃤ .)
+    - The session data received through API is used to generate session replays using rrweb.
+5. __Server Monitoring (Prometheus and Grafana):__
+    - We are using Prometheus to scrape server logs which then sends it to Grafana to generate graphs related to API hits and misses, resource utilization such as CPU, RAM and memory. I must say, our Promy and Grafie do make an excellent duo. I am “shipping” them together ❤️️.
+6. __Deployment (Docker and NGINX):__
+    - We created Docker images for all our subsystems to make it easy for deploying our code to any hardware.
+    - Since thousands of users will be using our system simultaneously, we decided to go with NGINX for load balancing ⚖️ by creating multiple server instances (which will be made easier due to our docker images) and distributing the load across these instances.
+    - Thus, it will also make it easier for horizontal scaling 📈💵in future as the user base continues to grow. 📶🚀
+
+
+# Finale:
+Our hard work paid off as we secured a place in the final top 10. We pitched our idea to a panel of ISRO scientists and eventually clinched the runner-up position out of 4000 submissions and 50 grand finalists.
+
+# What’s next?
+I am going to open-source🔓🌐 our code soon. The current code still doesn’t meet my expectations and I am hoping to smooth out ✨the rough edges✨ before making it public.
+
+Till then, you can check out our IBM hackathon’s Teaching Assistant AI Chat Bot here: [EduBud](https://github.com/Shreyashiiitn/EduBud)
+
+If you have and question, do reach out, I am sure I can teach you something new and in return I know I’ll learn from you. I am always happy to chat😁, so feel free to contact🤗. Looking forward to having an interesting and engaging conversation. 😉
+
+Until then.
+<br/>Jayvardhan Patil, 😎
+<br/>DevsTomorrow
